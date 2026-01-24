@@ -1,0 +1,570 @@
+// Soriano Mediadores - Insurtech Platform Schema
+// "El APPLE del seguro"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// USUARIOS Y AUTENTICACION
+// ========================================
+
+enum UserRole {
+  CLIENTE
+  EMPLEADO
+  ADMIN
+}
+
+enum UserLevel {
+  BRONCE
+  PLATA
+  ORO
+  PLATINO
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  password       String?
+  name           String?
+  phone          String?
+  avatar         String?
+  dni            String?
+  address        String?
+  city           String?
+  postalCode     String?
+  birthDate      DateTime?
+  role           UserRole  @default(CLIENTE)
+  level          UserLevel @default(BRONCE)
+  points         Int       @default(0)
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relaciones
+  accounts       Account[]
+  sessions       Session[]
+  policies       Policy[]
+  claims         Claim[]
+  documents      Document[]
+  receipts       Receipt[]
+  messages       Message[]         @relation("UserMessages")
+  receivedMessages Message[]       @relation("ReceivedMessages")
+  badges         UserBadge[]
+  pointsHistory  PointsHistory[]
+  referralsMade  Referral[]        @relation("Referrer")
+  referredBy     Referral?         @relation("Referred")
+  conversations  Conversation[]
+  notifications  Notification[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ========================================
+// POLIZAS
+// ========================================
+
+enum PolicyType {
+  AUTO
+  HOGAR
+  VIDA
+  SALUD
+  DECESOS
+  AHORRO
+  RC_PROFESIONAL
+  MULTIRRIESGO
+  FLOTA
+  ACCIDENTES
+}
+
+enum PolicyStatus {
+  ACTIVA
+  PENDIENTE
+  VENCIDA
+  CANCELADA
+  EN_RENOVACION
+}
+
+model Policy {
+  id              String       @id @default(cuid())
+  policyNumber    String       @unique
+  type            PolicyType
+  status          PolicyStatus @default(PENDIENTE)
+  userId          String
+
+  // Datos de la poliza
+  description     String?
+  premium         Decimal      @db.Decimal(10, 2)
+  paymentFrequency String      @default("anual") // mensual, trimestral, semestral, anual
+
+  // Fechas
+  startDate       DateTime
+  endDate         DateTime
+  renewalDate     DateTime?
+
+  // Coberturas (JSON flexible)
+  coverages       Json?
+
+  // Datos especificos segun tipo (vehiculo, inmueble, etc.)
+  metadata        Json?
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // Relaciones
+  user            User         @relation(fields: [userId], references: [id])
+  claims          Claim[]
+  documents       Document[]
+  payments        Payment[]
+  receipts        Receipt[]
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([policyNumber])
+}
+
+// ========================================
+// SINIESTROS
+// ========================================
+
+enum ClaimStatus {
+  COMUNICADO
+  DOCUMENTACION
+  EN_REVISION
+  APROBADO
+  EN_PROCESO
+  RESUELTO
+  RECHAZADO
+}
+
+model Claim {
+  id              String       @id @default(cuid())
+  claimNumber     String       @unique
+  policyId        String
+  userId          String
+
+  // Datos del siniestro
+  type            String
+  description     String       @db.Text
+  status          ClaimStatus  @default(COMUNICADO)
+  amount          Decimal?     @db.Decimal(10, 2)
+  approvedAmount  Decimal?     @db.Decimal(10, 2)
+
+  // Fechas
+  incidentDate    DateTime
+  reportedDate    DateTime     @default(now())
+  resolvedDate    DateTime?
+
+  // Datos adicionales
+  location        String?
+  metadata        Json?
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // Relaciones
+  policy          Policy       @relation(fields: [policyId], references: [id])
+  user            User         @relation(fields: [userId], references: [id])
+  timeline        ClaimTimeline[]
+  documents       Document[]
+
+  @@index([userId])
+  @@index([policyId])
+  @@index([status])
+  @@index([claimNumber])
+}
+
+model ClaimTimeline {
+  id          String      @id @default(cuid())
+  claimId     String
+  status      ClaimStatus
+  title       String
+  description String?
+  createdBy   String?     // ID del empleado que hizo el cambio
+  createdAt   DateTime    @default(now())
+
+  claim       Claim       @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+}
+
+// ========================================
+// DOCUMENTOS
+// ========================================
+
+enum DocumentType {
+  DNI
+  POLIZA
+  CONDICIONES_GENERALES
+  CONDICIONES_PARTICULARES
+  CERTIFICADO_POLIZA
+  RECIBO
+  JUSTIFICANTE_PAGO
+  SINIESTRO
+  INFORME_PERITO
+  FACTURA
+  CONTRATO
+  CARTA_VERDE
+  OTROS
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  userId      String
+  policyId    String?
+  claimId     String?
+
+  type        DocumentType
+  name        String
+  fileName    String
+  fileUrl     String
+  fileSize    Int
+  mimeType    String
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relaciones
+  user        User         @relation(fields: [userId], references: [id])
+  policy      Policy?      @relation(fields: [policyId], references: [id])
+  claim       Claim?       @relation(fields: [claimId], references: [id])
+
+  @@index([userId])
+  @@index([policyId])
+  @@index([claimId])
+}
+
+// ========================================
+// RECIBOS Y PAGOS
+// ========================================
+
+enum ReceiptStatus {
+  PENDIENTE
+  PAGADO
+  VENCIDO
+  DEVUELTO
+  ANULADO
+}
+
+enum PaymentMethod {
+  DOMICILIACION
+  TARJETA
+  TRANSFERENCIA
+  EFECTIVO
+}
+
+model Receipt {
+  id              String        @id @default(cuid())
+  receiptNumber   String        @unique  // Numero unico de recibo
+  policyId        String
+  userId          String
+
+  // Datos del recibo
+  concept         String        // Concepto: "Prima anual", "Prima trimestral", etc.
+  period          String        // Periodo: "01/2025 - 12/2025"
+  amount          Decimal       @db.Decimal(10, 2)
+  tax             Decimal       @db.Decimal(10, 2) @default(0)
+  totalAmount     Decimal       @db.Decimal(10, 2)
+
+  status          ReceiptStatus @default(PENDIENTE)
+
+  // Fechas importantes
+  issueDate       DateTime      @default(now())  // Fecha emision
+  dueDate         DateTime                        // Fecha vencimiento
+  paidDate        DateTime?                       // Fecha pago efectivo
+
+  // Datos bancarios
+  paymentMethod   PaymentMethod?
+  bankAccount     String?       // IBAN para domiciliacion
+  paymentReference String?      // Referencia bancaria
+
+  // Trazabilidad
+  attempts        Int           @default(0)       // Intentos de cobro
+  lastAttemptDate DateTime?                       // Ultimo intento
+  returnReason    String?                         // Motivo devolucion si aplica
+
+  // Documentos asociados
+  pdfUrl          String?       // URL del PDF del recibo
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relaciones
+  policy          Policy        @relation(fields: [policyId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+  history         ReceiptHistory[]
+
+  @@index([policyId])
+  @@index([userId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([receiptNumber])
+}
+
+model ReceiptHistory {
+  id          String        @id @default(cuid())
+  receiptId   String
+  status      ReceiptStatus
+  action      String        // "emitido", "cobrado", "devuelto", "reintento"
+  description String?
+  createdBy   String?       // ID del usuario/sistema que realizo la accion
+  metadata    Json?         // Datos adicionales (error bancario, etc.)
+  createdAt   DateTime      @default(now())
+
+  receipt     Receipt       @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+
+  @@index([receiptId])
+  @@index([createdAt])
+}
+
+// Modelo legacy para compatibilidad
+model Payment {
+  id          String        @id @default(cuid())
+  policyId    String
+
+  amount      Decimal       @db.Decimal(10, 2)
+  status      String        @default("PENDIENTE")
+  dueDate     DateTime
+  paidDate    DateTime?
+
+  method      String?
+  reference   String?
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  policy      Policy        @relation(fields: [policyId], references: [id])
+
+  @@index([policyId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+// ========================================
+// MENSAJERIA
+// ========================================
+
+model Message {
+  id          String   @id @default(cuid())
+  senderId    String
+  receiverId  String
+  subject     String
+  content     String   @db.Text
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  sender      User     @relation("UserMessages", fields: [senderId], references: [id])
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([isRead])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  message     String
+  type        String   // info, warning, success, error
+  isRead      Boolean  @default(false)
+  link        String?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+// ========================================
+// GAMIFICACION - SORIANO CLUB
+// ========================================
+
+enum PointsAction {
+  PERFIL_COMPLETO
+  NUEVA_POLIZA
+  RENOVACION
+  REFERIDO_REGISTRO
+  REFERIDO_CONVERSION
+  CHAT_SORI
+  REVIEW
+  PRIMER_LOGIN
+  LOGIN_DIARIO
+}
+
+model PointsHistory {
+  id          String       @id @default(cuid())
+  userId      String
+  action      PointsAction
+  points      Int
+  description String?
+  createdAt   DateTime     @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Badge {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  name        String
+  description String
+  icon        String      // nombre del icono o URL
+  color       String      // color del badge
+  requirement String      // descripcion del requisito
+  isSecret    Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id          String   @id @default(cuid())
+  userId      String
+  badgeId     String
+  earnedAt    DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge       Badge    @relation(fields: [badgeId], references: [id])
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+enum ReferralStatus {
+  PENDIENTE
+  REGISTRADO
+  CONVERTIDO
+  EXPIRADO
+}
+
+model Referral {
+  id            String         @id @default(cuid())
+  referrerId    String
+  referredId    String?        @unique
+  referredEmail String
+  referredName  String?
+  code          String         @unique
+  status        ReferralStatus @default(PENDIENTE)
+  createdAt     DateTime       @default(now())
+  convertedAt   DateTime?
+
+  referrer      User           @relation("Referrer", fields: [referrerId], references: [id])
+  referred      User?          @relation("Referred", fields: [referredId], references: [id])
+
+  @@index([referrerId])
+  @@index([code])
+  @@index([status])
+}
+
+// ========================================
+// CHAT SORI (IA)
+// ========================================
+
+model Conversation {
+  id          String        @id @default(cuid())
+  userId      String
+  title       String?
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    ChatMessage[]
+
+  @@index([userId])
+  @@index([isActive])
+}
+
+enum ChatMessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+model ChatMessage {
+  id             String          @id @default(cuid())
+  conversationId String
+  role           ChatMessageRole
+  content        String          @db.Text
+  metadata       Json?           // para guardar info extra (tokens usados, fuentes RAG, etc.)
+  createdAt      DateTime        @default(now())
+
+  conversation   Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
+// ========================================
+// CONTENIDO Y BLOG
+// ========================================
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String?
+  content     String   @db.Text
+  coverImage  String?
+  authorId    String?
+  category    String?
+  tags        String[]
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([category])
+}

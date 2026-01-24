@@ -1,0 +1,52 @@
+{
+  "name": "soriano-mediadores-premium",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@auth/prisma-adapter": "^2.11.1",
+    "@headlessui/react": "^2.2.0",
+    "@hookform/resolvers": "^3.9.0",
+    "@prisma/client": "^5.22.0",
+    "@tanstack/react-query": "^5.90.20",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.0.0",
+    "groq-sdk": "^0.37.0",
+    "jspdf": "^4.0.0",
+    "jspdf-autotable": "^5.0.7",
+    "lucide-react": "^0.469.0",
+    "next": "^14.2.15",
+    "next-auth": "^4.24.13",
+    "next-themes": "^0.4.6",
+    "prisma": "^5.22.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.0",
+    "react-hot-toast": "^2.5.0",
+    "recharts": "^2.15.0",
+    "swiper": "^11.2.0",
+    "tailwind-merge": "^2.6.0",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.15",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "5.9.3"
+  }
+}
