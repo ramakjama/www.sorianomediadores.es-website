@@ -1,13 +1,17 @@
-# Robots.txt for Soriano Mediadores
-# https://www.sorianomediadores.es
-
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
 
-# Disallow admin areas
-Disallow: /acceso-empleados/
+# Disallow dashboard/private routes
+Disallow: /dashboard
+Disallow: /polizas
+Disallow: /recibos
+Disallow: /siniestros
+Disallow: /documentos
+Disallow: /perfil
+Disallow: /soriano-club
+Disallow: /configuracion
 Disallow: /api/
-Disallow: /admin/
 
 # Sitemap
 Sitemap: https://www.sorianomediadores.es/sitemap.xml
