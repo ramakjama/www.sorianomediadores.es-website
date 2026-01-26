@@ -1,0 +1,124 @@
+/* ============================================
+   SORIANO MEDIADORES - DESIGN TOKENS
+   Premium Dark Theme - Shield Identity
+   ============================================ */
+
+:root {
+  /* --- Backgrounds / Surfaces --- */
+  --bg-0: #0B0F14;
+  --bg-1: #0F141B;
+
+  --surface-1: #141A22;
+  --surface-2: #171F29;
+  --surface-3: #1B2430;
+
+  --border-1: #1F2731;
+  --border-2: #2A3442;
+
+  /* --- Text Hierarchy --- */
+  --text-strong: #E9EEF4;
+  --text: #C6CFDA;
+  --text-muted: #8C97A6;
+  --text-faint: #6F7B89;
+  --text-disabled: #556172;
+
+  /* --- Brand (Silver Shield Family) --- */
+  --brand-silver: #C6CFDA;
+  --brand-chrome: #E9EEF4;
+  --brand-titanium: #6F7B89;
+  --brand-steel: #4A5568;
+  --brand-gradient-start: #E9EEF4;
+  --brand-gradient-end: #8C97A6;
+
+  /* --- Accent (Controlled Tech Blue) --- */
+  --accent: #4FA3FF;
+  --accent-hover: #2E7FE6;
+  --accent-active: #1E5FA8;
+  --accent-soft-bg: #0E223A;
+  --accent-glow: rgba(79, 163, 255, 0.15);
+
+  /* --- System States --- */
+  --success: #2FAF8A;
+  --success-bg: #0E221C;
+  --warning: #D9A441;
+  --warning-bg: #241D10;
+  --danger: #C24B4B;
+  --danger-bg: #261313;
+  --info: #5B89B8;
+  --info-bg: #0E1C2A;
+
+  /* --- Occident Red (Secondary Brand) --- */
+  --occident: #E30613;
+  --occident-hover: #CC050F;
+  --occident-active: #B00410;
+  --occident-soft-bg: #1A0A0B;
+
+  /* --- Shadows (Premium, No Glow) --- */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 12px 26px rgba(0, 0, 0, 0.28);
+  --shadow-elevated: 0 16px 40px rgba(0, 0, 0, 0.5);
+
+  /* --- Border Radius --- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+
+  /* --- Spacing Scale --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* --- Typography --- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', monospace;
+
+  /* --- Transitions --- */
+  --transition-fast: 150ms ease-out;
+  --transition-base: 200ms ease-out;
+  --transition-slow: 300ms ease-out;
+  --transition-slower: 400ms ease-out;
+
+  /* --- Z-Index Scale --- */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-toast: 600;
+  --z-tooltip: 700;
+}
+
+/* Light mode overrides (optional - keeping dark as primary) */
+.light {
+  --bg-0: #F8FAFC;
+  --bg-1: #FFFFFF;
+  --surface-1: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --surface-3: #E2E8F0;
+  --border-1: #E2E8F0;
+  --border-2: #CBD5E1;
+  --text-strong: #0F172A;
+  --text: #334155;
+  --text-muted: #64748B;
+  --text-faint: #94A3B8;
+  --text-disabled: #CBD5E1;
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 12px 26px rgba(0, 0, 0, 0.08);
+}
