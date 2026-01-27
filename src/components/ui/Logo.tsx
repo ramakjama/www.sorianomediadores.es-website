@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 interface LogoProps {
@@ -9,58 +10,17 @@ interface LogoProps {
 }
 
 export function Logo({ className, variant = 'default', showTagline = false }: LogoProps) {
-  // Colores según variante
-  const primaryColor = variant === 'white'
-    ? '#FFFFFF'
-    : variant === 'color'
-      ? '#E30613'
-      : variant === 'dark'
-        ? '#171717'
-        : '#E30613'
-
-  const secondaryColor = variant === 'white'
-    ? '#FFFFFF'
-    : variant === 'dark'
-      ? '#171717'
-      : '#171717'
-
-  const tertiaryColor = variant === 'white'
-    ? 'rgba(255,255,255,0.7)'
-    : '#525252'
-
   return (
     <div className={cn('flex items-center gap-3', className)}>
-      {/* Isotipo - S estilizada */}
-      <svg
-        viewBox="0 0 48 48"
-        className="h-10 w-10 flex-shrink-0"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        {/* Fondo circular opcional */}
-        <circle cx="24" cy="24" r="24" fill={primaryColor} />
-        {/* S estilizada en blanco */}
-        <path
-          d="M33.5 18.5C33.5 14.4 30.1 11 26 11H15V15H26C27.9 15 29.5 16.6 29.5 18.5C29.5 20.4 27.9 22 26 22H18C13.9 22 10.5 25.4 10.5 29.5C10.5 33.6 13.9 37 18 37H29V33H18C16.1 33 14.5 31.4 14.5 29.5C14.5 27.6 16.1 26 18 26H26C30.1 26 33.5 22.6 33.5 18.5Z"
-          fill="white"
-        />
-      </svg>
-
-      {/* Logotipo texto */}
-      <div className="flex flex-col">
-        <span
-          className="text-xl font-bold tracking-tight leading-none"
-          style={{ color: secondaryColor }}
-        >
-          SORIANO
-        </span>
-        <span
-          className="text-[10px] font-medium tracking-[0.2em] uppercase leading-none mt-0.5"
-          style={{ color: tertiaryColor }}
-        >
-          Mediadores
-        </span>
-      </div>
+      {/* Logo real de Soriano Mediadores */}
+      <Image
+        src="/images/logos/soriano-logo.png"
+        alt="Soriano Mediadores"
+        width={180}
+        height={60}
+        className="h-10 w-auto object-contain"
+        priority
+      />
     </div>
   )
 }

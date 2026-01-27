@@ -12,46 +12,46 @@
   --surface-2: #171F29;
   --surface-3: #1B2430;
 
-  --border-1: #1F2731;
-  --border-2: #2A3442;
+  --border-1: #2A3442;
+  --border-2: #364252;
 
   /* --- Text Hierarchy --- */
   --text-strong: #E9EEF4;
-  --text: #C6CFDA;
-  --text-muted: #8C97A6;
-  --text-faint: #6F7B89;
+  --text: #D4DCE6;
+  --text-muted: #9BA8B8;
+  --text-faint: #7D8A9C;
   --text-disabled: #556172;
 
   /* --- Brand (Silver Shield Family) --- */
-  --brand-silver: #C6CFDA;
+  --brand-silver: #D4DCE6;
   --brand-chrome: #E9EEF4;
-  --brand-titanium: #6F7B89;
+  --brand-titanium: #7D8A9C;
   --brand-steel: #4A5568;
   --brand-gradient-start: #E9EEF4;
-  --brand-gradient-end: #8C97A6;
+  --brand-gradient-end: #9BA8B8;
 
   /* --- Accent (Controlled Tech Blue) --- */
   --accent: #4FA3FF;
   --accent-hover: #2E7FE6;
   --accent-active: #1E5FA8;
-  --accent-soft-bg: #0E223A;
+  --accent-soft-bg: #1A3A5C;
   --accent-glow: rgba(79, 163, 255, 0.15);
 
   /* --- System States --- */
   --success: #2FAF8A;
-  --success-bg: #0E221C;
+  --success-bg: #1A3D2E;
   --warning: #D9A441;
-  --warning-bg: #241D10;
+  --warning-bg: #3D2F1A;
   --danger: #C24B4B;
-  --danger-bg: #261313;
+  --danger-bg: #3D1F1F;
   --info: #5B89B8;
-  --info-bg: #0E1C2A;
+  --info-bg: #1A2F45;
 
   /* --- Occident Red (Secondary Brand) --- */
   --occident: #E30613;
   --occident-hover: #CC050F;
   --occident-active: #B00410;
-  --occident-soft-bg: #1A0A0B;
+  --occident-soft-bg: #2D1416;
 
   /* --- Shadows (Premium, No Glow) --- */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -107,13 +107,13 @@
 
 /* Light mode overrides (optional - keeping dark as primary) */
 .light {
-  --bg-0: #F8FAFC;
+  --bg-0: #FAFBFC;
   --bg-1: #FFFFFF;
   --surface-1: #FFFFFF;
-  --surface-2: #F1F5F9;
-  --surface-3: #E2E8F0;
-  --border-1: #E2E8F0;
-  --border-2: #CBD5E1;
+  --surface-2: #F5F7FA;
+  --surface-3: #E8ECF1;
+  --border-1: #D1D9E3;
+  --border-2: #B8C4D1;
   --text-strong: #0F172A;
   --text: #334155;
   --text-muted: #64748B;
@@ -121,4 +121,12 @@
   --text-disabled: #CBD5E1;
   --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
   --shadow-card: 0 12px 26px rgba(0, 0, 0, 0.08);
+  
+  /* Mejorar fondos de badges en modo claro */
+  --accent-soft-bg: #E3F2FF;
+  --occident-soft-bg: #FFE8E9;
+  --success-bg: #E6F7F1;
+  --warning-bg: #FFF4E6;
+  --danger-bg: #FFE8E8;
+  --info-bg: #E8F4FF;
 }
