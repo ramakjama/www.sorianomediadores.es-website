@@ -1,0 +1,17 @@
+
+> soriano-mediadores-premium@1.0.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+  - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 1796ms
+ ○ Compiling / ...
+ ✓ Compiled / in 4.5s (1566 modules)
+ GET / 200 in 4814ms
+ ✓ Compiled in 506ms (776 modules)
+ GET / 200 in 60ms
+ ✓ Compiled in 336ms (776 modules)
+[?25h

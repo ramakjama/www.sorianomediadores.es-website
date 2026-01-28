@@ -1,0 +1,10 @@
+import { Resend } from 'resend'
+
+if (!process.env.RESEND_API_KEY) {
+  console.warn('⚠️ RESEND_API_KEY no configurada. Los emails no se enviarán.')
+}
+
+export const resend = new Resend(process.env.RESEND_API_KEY || 'demo-key')
+
+export const COMPANY_EMAIL = 'info@sorianomediadores.es'
+export const COMPANY_NAME = 'Soriano Mediadores de Seguros'
